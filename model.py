@@ -130,30 +130,30 @@ class ItemkNN(BaseRecommendAlgorithm):
 
         print 'Item kNN model for both clicks and buys are built'
 
-    def load_model(self, k):
+    def load_model(self, neighborhood_size):
         """
         Load training model
-        :param k: an integer
+        :param neighborhood_size: an integer
         :return: a dict with each item as a key and a list of tuple(similarity, neighbor) as value
         """
         clicks_sim = pd.read_csv('output/clicks_itemknn_model.csv')
-        item_neighbor = utils.get_item_neighbor(clicks_sim, k)
+        item_neighbor = utils.get_item_neighbor(clicks_sim, neighborhood_size)
         return item_neighbor
 
-    def recommend_items(self, item_neighbor, user_id, source_items_map, k):
+    def recommend_items(self, item_neighbor, user_id, source_items_map, num_recommended_items):
         """
         Use the item kNN based recommender system model to make recommendations
         :param item_neighbor: a dict with each item as a key and a list of tuple(neighbors, similarity) as value
         :param user_id: a series of user_id
         :param source_items_map: a dict with key is user and value is a list of user's recent clicks items
-        :param k: an integer
+        :param num_recommended_items: an integer
         :return: a dictionary with user_id and its corresponding recommend items
         """
         self.user_id = Set(user_id)
 
         user_recommend_map = {}
         for id in self.user_id:
-            recommend = utils.get_rec_list(item_neighbor, source_items_map.get(id), k)
+            recommend = utils.get_rec_list(item_neighbor, source_items_map.get(id), num_recommended_items)
             user_recommend_map[id] = recommend
             #print 'finish {0}/{1} user recommend list'.format(id, len(user_id))
 

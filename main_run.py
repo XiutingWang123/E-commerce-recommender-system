@@ -5,9 +5,10 @@ from model import Popularity, ItemkNN
 from evaluation import test_model
 
 
-USAGE = "<trainset_clicks> <trainset_buys> <testset> <model> <k>"
-USAGE_HINT = "model should be a string, k should be an integer."
+USAGE = "<trainset_clicks> <trainset_buys> <testset> <model> <num_recommended_items>"
+USAGE_HINT = "model should be a string, num_recommended_items should be an integer."
 price_threshold = 50
+neighborhood_size = 6
 MODELS = {'popularity': Popularity(),
           'itemknn': ItemkNN()}
 
@@ -25,7 +26,7 @@ def getArgs():
 
 
 if __name__ == '__main__':
-    trainSet_clicks, trainSet_buys, testSet, model, k = getArgs()
+    trainSet_clicks, trainSet_buys, testSet, model, num_recommended_items = getArgs()
     clicks, buys, test = utils.load_data(trainSet_clicks, trainSet_buys, testSet)
     test_count = utils.parse_test(test)
     user_id = test_count['Session ID']
@@ -37,9 +38,9 @@ if __name__ == '__main__':
     mod.learn(clicks, buys, price_threshold)
     print 'Training time: %s seconds' % (time.time() - start_time)
     
-    model_data = mod.load_model(k)
+    model_data = mod.load_model(neighborhood_size)
     recommend_time = time.time()
-    user_recommend_map = mod.recommend_items(model_data, user_id, source_items_map, k)
+    user_recommend_map = mod.recommend_items(model_data, user_id, source_items_map, num_recommended_items)
     print 'Average throughput: {} users per second'.\
         format(len(user_recommend_map) / (time.time() - recommend_time))
     precision, recall = test_model(user_recommend_map, test_items_map)

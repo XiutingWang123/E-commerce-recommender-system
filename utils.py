@@ -158,11 +158,11 @@ def get_sim_list(item_count, item_pair_count):
     return sim_list
 
 
-def get_item_neighbor(clicks_sim, k):
+def get_item_neighbor(clicks_sim, neighborhood_size):
     """
     Create a dict with each item and its neighbors
     :param clicks_sim: a dataframe contains each item pairs and their similarity
-    :param k: an integer
+    :param neighborhood_size: an integer
     :return: a dict with each item as a key and a list of tuple(similarity, neighbor) as value
     """
 
@@ -178,11 +178,11 @@ def get_item_neighbor(clicks_sim, k):
             item_neighbor[row[2]] = heap
         # push a tuple(similarity, neighbor) into heap, only maintain top k
         heapq.heappush(item_neighbor[row[1]], (row[-1], row[2]))
-        if len(item_neighbor[row[1]]) > k:
+        if len(item_neighbor[row[1]]) > neighborhood_size:
             heapq.heappop(item_neighbor[row[1]])
 
         heapq.heappush(item_neighbor[row[2]], (row[-1], row[1]))
-        if len(item_neighbor[row[2]]) > k:
+        if len(item_neighbor[row[2]]) > neighborhood_size:
             heapq.heappop(item_neighbor[row[2]])
 
     print 'item_neighbor dict is built'

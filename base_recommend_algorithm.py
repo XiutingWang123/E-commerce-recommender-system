@@ -5,16 +5,16 @@ class BaseRecommendAlgorithm(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def learn(self, train_1, train_2):
+    def learn(self, train_clicks, train_buys):
         """Create a recommender model based on train_data """
         pass
 
     @abstractmethod
-    def load_model(self, k):
+    def load_model(self, neighborhood_size):
         """Load training model"""
         pass
 
     @abstractmethod
-    def recommend_items(self, model_data, user_id, source_items_map, k):
+    def recommend_items(self, model_data, user_id, source_items_map, num_recommended_items):
         """Produce recommendation list with k items"""
         pass
